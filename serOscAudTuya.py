@@ -23,13 +23,10 @@ def readConfig(settingsFile):
         data = {
             "uart" : "auto",
 	        "baudrate" : 9600,
-	        "keyPress" : "abcdefghijklmnopqrstuvwxyz",
-            "numBtns" : 1,
-            "useTimer" : 1,
-            "timer" : 120,
-            "oscServer" : "127.0.0.1",
+	        "oscServer" : "127.0.0.1",
             "oscPort" : 8010,
-            "oscAddress" : "/serial",
+            "idleAddress" : "/idle",
+            "videoAddress" : "/video",
             "audioFile" : "audioFile.wav",
             "arduinoDriver" : "USB\\VID_1A86&PID_7523",
             "switches" : [
@@ -97,10 +94,10 @@ settingsFile = os.path.join(cwd, "config.json")
 config = readConfig(settingsFile)
 baudrate = config["baudrate"]
 uart = config["uart"]
-keyPress = config["keyPress"]
 oscServer = config["oscServer"]
 oscPort = config["oscPort"]
-oscAddress = config["oscAddress"]
+idleAddress = config["idleAddress"]
+videoAddress = config["videoAddress"]
 switches = config["switches"]
 audioFile = config["audioFile"]
 arduinoDriver = config["arduinoDriver"]
@@ -173,13 +170,14 @@ try:
             killProcess("mpv.exe")
             ledState = control_switches(False)
             audioPlayer = subprocess.Popen(["mpv", audioFile])
-            client.send_message(oscAddress, keyPress[xInt])
+            client.send_message(videoAddress, 1)
             print("osc message sent and Audio Started")
             time.sleep(2)
             
         if (audioPlayer.poll() is not None) and (not ledState):
             #Turn on Lights
-            ledState = control_switches(True)    
+            ledState = control_switches(True)
+            client.send_message(idleAddress, 1)
 
 except KeyboardInterrupt:
     ser.close()
