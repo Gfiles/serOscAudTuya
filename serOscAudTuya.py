@@ -13,7 +13,8 @@ from pythonosc import udp_client
 import subprocess
 import tinytuya #pip install tinytuya
 
-#keyboard = Controller()
+VERSION="2025.05.08"
+print(f"Version: {VERSION}")
 
 def readConfig(settingsFile):
     if os.path.isfile(settingsFile):
@@ -61,10 +62,10 @@ def control_switches(state):
             #print(local_device)
             try:
                 if state:
-                    local_device.turn_on()
+                    local_device.turn_on(nowait=True)
                     print("Switchs Turned on")
                 else:
-                    local_device.turn_off()
+                    local_device.turn_off(nowait=True)
                     print("Switch Turned off")
             except:
                 print("Error conecting to Switch")
