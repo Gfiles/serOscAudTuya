@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 """
-pyinstaller --clean --onefile --add-data "devcon.exe;." serOscAud.py
+pyinstaller --clean --onefile --add-data "devcon.exe;." serOscAudTuya.py
 """
 import json
 import os
@@ -116,7 +116,7 @@ print("Play Audio")
 audioPlayer = subprocess.Popen(["mpv", audioFile])
 time.sleep(2)
 killProcess("mpv.exe")
-
+ledState = True
 print("Ready")
 try:
     while True:
@@ -127,10 +127,12 @@ try:
             audioPlayer = subprocess.Popen(["mpv", audioFile])
             client.send_message(videoAddress, 1)
             print("osc message sent and Audio Started")
+            ledState = False
             time.sleep(2)
             
         if (audioPlayer.poll() is not None) and (not ledState):
             #Turn on Lights
+            ledState = True
             client.send_message(idleAddress, 1)
 
 except KeyboardInterrupt:
